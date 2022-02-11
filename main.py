@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import mean_absolute_error
 from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestRegressor
 
 # Steps to building a model:
 # Define : what type of model are we using? Decision tree? Some other?
@@ -91,11 +92,18 @@ def get_mae(max_leaf_nodes, train_x, val_x, train_y, val_y):
     mae = mean_absolute_error(val_y, preds_val)
     return(mae)
 
-def main():
+def main_dTree():
     train_X, val_X, train_y, val_y = initialize_data()
     for max_leaf_nodes in [5, 50, 500, 5000]:
         my_mae = get_mae(max_leaf_nodes, train_X, val_X, train_y, val_y)
         print("Max leaf nodes: %d  \t\t Mean Absolute Error:  %d" % (max_leaf_nodes, my_mae))
 
+def main_randForest():
+    # random forest uses many trees and makes a prediction by averaging predictions of each component tree
+    train_X, val_X, train_y, val_y = initialize_data()
+    forest_model = RandomForestRegressor(random_state = 1)
+    forest_model.fit(train_X, train_y)
+    melb_preds = forest_model.predict(val_X)
+    print(mean_absolute_error(val_y, melb_preds))
 
-main()
+main_randForest()
